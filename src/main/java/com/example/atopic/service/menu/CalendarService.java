@@ -20,4 +20,9 @@ public class CalendarService {
     public Calendar get(User user) {
         return calendarTmp.get(user);
     }
+
+    public Calendar getOrCurrent(User user) {
+        calendarTmp.putIfAbsent(user, Calendar.getInstance());
+        return get(user);
+    }
 }

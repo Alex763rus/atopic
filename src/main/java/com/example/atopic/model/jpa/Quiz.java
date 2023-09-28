@@ -1,7 +1,7 @@
 package com.example.atopic.model.jpa;
 
-import com.example.atopic.enums.QuestExportStatus;
-import com.example.atopic.enums.quest.*;
+import com.example.atopic.enums.QuizExportStatus;
+import com.example.atopic.enums.quiz.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,14 +13,14 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@Entity(name = "quest")
-public class Quest {
+@Entity(name = "quiz")
+public class Quiz {
 
     @EmbeddedId
-    private QuestKey questKey;
+    private QuizKey quizKey;
 
     @Column(name = "export_status")
-    private QuestExportStatus questExportStatus;
+    private QuizExportStatus quizExportStatus;
 
     @Column(name = "answer1")
     private Answer answer1;
@@ -55,19 +55,19 @@ public class Quest {
     @Column(name = "answer11")
     private Answer answer11;
 
-    @Column(name = "quest_date")
-    private Timestamp questDate;
+    @Column(name = "quiz_date")
+    private Timestamp quizDate;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Quest quest = (Quest) o;
-        return Objects.equals(questKey, quest.questKey);
+        Quiz quiz = (Quiz) o;
+        return Objects.equals(quizKey, quiz.quizKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(questKey);
+        return Objects.hash(quizKey);
     }
 }

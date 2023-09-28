@@ -6,16 +6,20 @@ import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class Constant {
+
+    public static final String APP_NAME = "Atopic";
+
     @NoArgsConstructor(access = PRIVATE)
     public static final class Command {
 
         public static final String COMMAND_REGISTER = "/register";
 
         public static final String COMMAND_CALENDAR = "/calendar";
-        public static final String COMMAND_QUEST = "/quest";
+        public static final String COMMAND_TAKE_QUIZ = "/take_quiz";
 
-        public static final String COMMAND_EXPORT_NEW_LEADS = "/exportnewquests";
-        public static final String COMMAND_EXPORT_ALL_QUEST = "/exportall";
+        public static final String COMMAND_EXPORT_NEW_QUIZZES = "/export_new_quizzes";
+        public static final String COMMAND_EXPORT_ALL_QUIZZES = "/export_all_quizzes";
+        public static final String COMMAND_EXPORT_STATISTIC_DAY = "/export_statistic_day";
 
     }
 
@@ -26,7 +30,5 @@ public final class Constant {
         public static final String INPUT_FILE_OFFER_PATH = "${input.file.offer.path}";
 
     }
-
-    public static final String APP_NAME = "Atopic";
 
 }

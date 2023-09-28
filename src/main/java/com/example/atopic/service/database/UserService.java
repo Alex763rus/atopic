@@ -1,6 +1,5 @@
 package com.example.atopic.service.database;
 
-import com.example.atopic.enums.QuestExportStatus;
 import com.example.atopic.model.jpa.*;
 import com.example.atopic.service.menu.StateService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.sql.Timestamp;
-import java.util.List;
 
-import static com.example.atopic.enums.QuestExportStatus.NEW_QUEST;
 import static com.example.atopic.enums.UserRole.UNREGISTERED;
 
 @Slf4j

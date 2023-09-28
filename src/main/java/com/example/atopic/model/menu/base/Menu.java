@@ -5,10 +5,11 @@ import com.example.atopic.exception.InputCallbackException;
 import com.example.atopic.exception.InputLongException;
 import com.example.atopic.model.jpa.User;
 import com.example.atopic.model.menu.MenuActivity;
-import com.example.atopic.service.database.QuestService;
+import com.example.atopic.service.database.QuizService;
 import com.example.atopic.service.database.UserService;
 import com.example.atopic.service.excel.ExcelService;
 import com.example.atopic.service.menu.CalendarService;
+import com.example.atopic.service.menu.QuizButtonService;
 import com.example.atopic.service.menu.StateService;
 import jakarta.persistence.MappedSuperclass;
 import lombok.val;
@@ -20,10 +21,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.example.tgcommons.constant.Constant.TextConstants.EMPTY;
 import static org.example.tgcommons.utils.ButtonUtils.createVerticalColumnMenu;
@@ -44,12 +42,16 @@ public abstract class Menu implements MenuActivity {
     protected UserService userService;
 
     @Autowired
-    protected QuestService questService;
+    protected QuizService quizService;
 
     @Autowired
     protected CalendarService calendarService;
 
+    @Autowired
+    protected QuizButtonService quizButtonService;
+
     private static final String DEFAULT_TEXT_ERROR = "Ошибка! Команда не найдена";
+
 
     protected List<PartialBotApiMethod> errorMessageDefault(Update update) {
         return SendMessageWrap.init()

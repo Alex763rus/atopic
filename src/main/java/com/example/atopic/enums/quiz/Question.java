@@ -1,4 +1,4 @@
-package com.example.atopic.enums.quest;
+package com.example.atopic.enums.quiz;
 
 public enum Question {
     QUEST_1("1. Испытывали ли Вы сегодня субъективное ощущение зуда, жжения или болезненности?"),

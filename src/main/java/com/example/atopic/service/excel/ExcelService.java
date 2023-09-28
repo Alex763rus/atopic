@@ -20,7 +20,7 @@ import static org.apache.poi.ss.usermodel.CellStyle.*;
 @Service
 public class ExcelService {
 
-    public InputFile createExcelDocument(String sheetName, List<List<String>> excelData) {
+    public InputFile createExcelDocument(String sheetName, List<List<String>> excelData, int countAutoSizeColumn) {
         File tmpFile;
         try {
             tmpFile = Files.createTempFile("exel", ".xls").toFile();
@@ -45,7 +45,7 @@ public class ExcelService {
             }
         }
         for (int x = 0; x < excelData.get(0).size(); x++) {
-            if (x < 8) {
+            if (x < countAutoSizeColumn) {
                 sheet.autoSizeColumn(x);
             } else {
                 sheet.setColumnWidth(x, 6000);

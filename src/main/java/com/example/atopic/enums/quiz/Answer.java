@@ -1,4 +1,4 @@
-package com.example.atopic.enums.quest;
+package com.example.atopic.enums.quiz;
 
 public enum Answer {
 

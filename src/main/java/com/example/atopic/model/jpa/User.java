@@ -1,6 +1,5 @@
 package com.example.atopic.model.jpa;
 
-import com.example.atopic.enums.QuestExportStatus;
 import com.example.atopic.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

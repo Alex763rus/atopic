@@ -9,24 +9,22 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
-import static com.example.atopic.constant.Constant.Command.COMMAND_EXPORT_NEW_LEADS;
-import static com.example.atopic.enums.QuestExportStatus.EXPORTED_QUEST;
-import static com.example.atopic.enums.QuestExportStatus.NEW_QUEST;
+import static com.example.atopic.constant.Constant.Command.COMMAND_EXPORT_ALL_QUIZZES;
 
-@Component(COMMAND_EXPORT_NEW_LEADS)
+@Component(COMMAND_EXPORT_ALL_QUIZZES)
 @Slf4j
-public class MenuExportNewQuest extends MenuExportQuestBase {
+public class MenuExportAllQuiz extends MenuExportQuizBase {
 
     @Override
     public String getMenuComand() {
-        return COMMAND_EXPORT_NEW_LEADS;
+        return COMMAND_EXPORT_ALL_QUIZZES;
     }
 
     @Override
     public List<PartialBotApiMethod> menuRun(User user, Update update) {
         try {
             return switch (stateService.getState(user)) {
-                case FREE -> exportNewLeadsToExcel(user, update);
+                case FREE -> exportAllLeadsToExcel(user, update);
                 default -> createErrorDefaultMessage(user);
             };
         } catch (Exception ex) {
@@ -35,16 +33,13 @@ public class MenuExportNewQuest extends MenuExportQuestBase {
         }
     }
 
-    private List<PartialBotApiMethod> exportNewLeadsToExcel(User user, Update update) {
-        val questList = questService.getAll(NEW_QUEST);
-        val answer = exportToExcel(user, questList);
-        questList.forEach(e -> e.setQuestExportStatus(EXPORTED_QUEST));
-        questService.save(questList);
-        return answer;
+    private List<PartialBotApiMethod> exportAllLeadsToExcel(User user, Update update) {
+        val userList = quizService.getAll();
+        return exportToExcel(user, userList);
     }
 
     @Override
     public String getDescription() {
-        return "Новые опросы";
+        return "Выгрузка всех опросов";
     }
 }

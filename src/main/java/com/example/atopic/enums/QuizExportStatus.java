@@ -1,6 +1,6 @@
 package com.example.atopic.enums;
 
-public enum QuestExportStatus {
+public enum QuizExportStatus {
 
     NEW_QUEST, EXPORTED_QUEST
 }

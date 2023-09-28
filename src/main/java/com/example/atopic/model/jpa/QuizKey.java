@@ -3,7 +3,6 @@ package com.example.atopic.model.jpa;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,7 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class QuestKey implements Serializable {
+public class QuizKey implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "chatId")
@@ -29,15 +28,15 @@ public class QuestKey implements Serializable {
 
     @Override
     public String toString() {
-        return LocalDate.of(calendarYear, calendarMonth, calendarDay).toString();
+        return LocalDate.of(calendarYear, calendarMonth + 1, calendarDay).toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        QuestKey questKey = (QuestKey) o;
-        return Objects.equals(user, questKey.user) && Objects.equals(calendarYear, questKey.calendarYear) && Objects.equals(calendarMonth, questKey.calendarMonth) && Objects.equals(calendarDay, questKey.calendarDay);
+        QuizKey quizKey = (QuizKey) o;
+        return Objects.equals(user, quizKey.user) && Objects.equals(calendarYear, quizKey.calendarYear) && Objects.equals(calendarMonth, quizKey.calendarMonth) && Objects.equals(calendarDay, quizKey.calendarDay);
     }
 
 

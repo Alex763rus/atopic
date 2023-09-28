@@ -1,30 +1,32 @@
 package com.example.atopic.model.menu.employee;
 
-import com.example.atopic.enums.quest.Answer;
-import com.example.atopic.enums.quest.Question;
-import com.example.atopic.model.jpa.Quest;
+import com.example.atopic.enums.quiz.Answer;
+import com.example.atopic.enums.quiz.Question;
 import com.example.atopic.model.jpa.User;
 import com.example.atopic.model.menu.base.Menu;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.example.tgcommons.model.button.Button;
+import org.example.tgcommons.model.button.ButtonsDescription;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.example.atopic.constant.Constant.Command.COMMAND_CALENDAR;
-import static com.example.atopic.constant.Constant.Command.COMMAND_QUEST;
+import static com.example.atopic.constant.Constant.Command.COMMAND_TAKE_QUIZ;
 import static com.example.atopic.enums.State.CALENDAR_WAIT_CHOOSE_DATE;
 import static com.example.atopic.enums.State.FREE;
-import static com.example.atopic.enums.quest.Question.*;
+import static com.example.atopic.enums.quiz.Question.*;
+import static java.util.Collections.emptyList;
 import static org.example.tgcommons.constant.Constant.Calendar.*;
+import static org.example.tgcommons.constant.Constant.Command.COMMAND_START;
 import static org.example.tgcommons.constant.Constant.TextConstants.NEW_LINE;
 import static org.example.tgcommons.utils.ButtonUtils.createCalendar;
 import static org.example.tgcommons.utils.MessageUtils.prepareBold;
+import static org.example.tgcommons.utils.StringUtils.prepareShield;
 
 @Component(COMMAND_CALENDAR)
 @Slf4j
@@ -71,55 +73,57 @@ public class MenuCalendar extends Menu {
                     calendarService.add(user, calendar);
                     return haveDateLogic(user);
                 } catch (NumberFormatException ignore) {
-                    int q = 0;
+                    int ignored = 0;
                 }
             }
         }
-        return createCalendarMessage(user, update, calendar);
+        return stateService.getState(user) == FREE ? emptyList() : createCalendarMessage(user, update, calendar);
     }
 
     private List<PartialBotApiMethod> haveDateLogic(User user) {
         val calendar = calendarService.get(user);
-        val quest = questService.get(user, calendar);
+        val quiz = quizService.get(user, calendar);
         val message = new StringBuilder();
-        message.append(prepareBold("Выбрана дата: ")).append(new java.sql.Date(calendar.getTimeInMillis())).append(NEW_LINE);
-        if (quest == null) {
-            message.append("В выбранную дату данные отсутствуют.").append(NEW_LINE)
-                    .append("внести данные: ").append(COMMAND_QUEST).append(NEW_LINE);
+        val buttons = new ArrayList<Button>();
+        message.append("Выбрана дата: ").append(prepareBold(new java.sql.Date(calendar.getTimeInMillis()).toString())).append(NEW_LINE);
+        if (quiz == null) {
+            message.append("В выбранную дату данные отсутствуют").append(NEW_LINE);
+            buttons.add(Button.init().setKey(COMMAND_TAKE_QUIZ).setValue("Внести данные").build());
         } else {
             message
-                    .append(getQuestDescription(QUEST_1, quest.getAnswer1()))
-                    .append(getQuestDescription(QUEST_2, quest.getAnswer2()))
-                    .append(getQuestDescription(QUEST_3, quest.getAnswer3()))
-                    .append(getQuestDescription(QUEST_4, quest.getAnswer4()))
-                    .append(getQuestDescription(QUEST_5, quest.getAnswer5()))
-                    .append(getQuestDescription(QUEST_6, quest.getAnswer6()))
-                    .append(getQuestDescription(QUEST_7, quest.getAnswer7()))
-                    .append(getQuestDescription(QUEST_8, quest.getAnswer8()))
-                    .append(getQuestDescription(QUEST_9, quest.getAnswer9()))
-                    .append(getQuestDescription(QUEST_10, quest.getAnswer10()))
-                    .append(getQuestDescription(QUEST_11, quest.getAnswer11()))
+                    .append(getQuestDescription(QUEST_1, quiz.getAnswer1()))
+                    .append(getQuestDescription(QUEST_2, quiz.getAnswer2()))
+                    .append(getQuestDescription(QUEST_3, quiz.getAnswer3()))
+                    .append(getQuestDescription(QUEST_4, quiz.getAnswer4()))
+                    .append(getQuestDescription(QUEST_5, quiz.getAnswer5()))
+                    .append(getQuestDescription(QUEST_6, quiz.getAnswer6()))
+                    .append(getQuestDescription(QUEST_7, quiz.getAnswer7()))
+                    .append(getQuestDescription(QUEST_8, quiz.getAnswer8()))
+                    .append(getQuestDescription(QUEST_9, quiz.getAnswer9()))
+                    .append(getQuestDescription(QUEST_10, quiz.getAnswer10()))
+                    .append(getQuestDescription(QUEST_11, quiz.getAnswer11()))
                     .append(NEW_LINE)
-                    .append(("Изменить показания: ")).append(COMMAND_QUEST).append(NEW_LINE);
+                    .append(("Изменить показания: ")).append(prepareShield(COMMAND_TAKE_QUIZ)).append(NEW_LINE);
+            buttons.add(Button.init().setKey(COMMAND_TAKE_QUIZ).setValue("Изменить показания").build());
         }
-        message.append("Выбрать другую дату: ").append(COMMAND_CALENDAR).append(NEW_LINE);
-        return createMessageList(user, message.toString());
+        buttons.add(Button.init().setKey(COMMAND_CALENDAR).setValue("Календарь").build());
+        buttons.add(Button.init().setKey(COMMAND_START).setValue("Главное меню").build());
+        val buttonsDescription = ButtonsDescription.init().setCountColumn(1).setButtons(buttons).build();
+        return createMessageList(user, message.toString(), buttonsDescription);
     }
 
     private String getQuestDescription(Question question, Answer answer) {
-        return String.format("%s - %s%s", question.getTitle(), answer.getTitle(), NEW_LINE);
+        return String.format("%s%s- %s%s", question.getTitle(), NEW_LINE, prepareBold(answer.getTitle()), NEW_LINE);
     }
 
     private List<PartialBotApiMethod> freelogic(User user, Update update) {
-        val calendar = Calendar.getInstance();
-        calendarService.add(user, calendar);
+        val calendar = calendarService.getOrCurrent(user);
         stateService.setState(user, CALENDAR_WAIT_CHOOSE_DATE);
         return createCalendarMessage(user, update, calendar);
     }
 
-
     private List<PartialBotApiMethod> createCalendarMessage(User user, Update update, Calendar calendar) {
-        val days = questService.getDays(user, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
+        val days = quizService.getDays(user, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
         val markedDays = new HashMap<Integer, String>();
         days.stream().forEach(day -> markedDays.put(day, day + EmojiParser.parseToUnicode(":anger:")));
         return createMessageList(user, "Выберите дату:", createCalendar(calendar, markedDays));

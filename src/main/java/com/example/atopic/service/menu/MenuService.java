@@ -47,6 +47,13 @@ public class MenuService {
                 menuActivity = security.checkAccess(user, menu.getMenuComand()) ? menu : menuActivityDefault;
             }
         }
+        if (update.hasCallbackQuery()) {
+            val menu = security.getMenuActivity(update.getCallbackQuery().getData());
+            if (menu != null) {
+                menuActivity = security.checkAccess(user, menu.getMenuComand()) ? menu : menuActivityDefault;
+            }
+        }
+
         if (menuActivity != null) {
             stateService.setMenu(user, menuActivity);
         } else {
